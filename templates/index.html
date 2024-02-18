@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .access-info {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .access-info p {
+            margin: 5px 0;
+        }
+
+        .access-info form {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Access Control</h1>
+    
+    {% for path, access_granted in requested_paths.items() %}
+        <div class="access-info">
+            <p><strong>Requested Path:</strong> {{ path }}</p>
+            <p><strong>Access Status:</strong> {% if access_granted %}Granted{% else %}Restricted{% endif %}</p>
+            <form action="{{ url_for('grant_access') }}" method="post">
+                <input type="hidden" name="path" value="{{ path }}">
+                <button type="submit">Grant Access</button>
+            </form>
+            <form action="{{ url_for('restrict_access') }}" method="post">
+                <input type="hidden" name="path" value="{{ path }}">
+                <button type="submit">Restrict Access</button>
+            </form>
+        </div>
+    {% endfor %}
+    
+    <hr>
+    
+    <form action="{{ url_for('update_access') }}" method="get">
+        <label for="app_path">Enter the path of the application you want to check:</label>
+        <input type="text" id="app_path" name="path" required>
+        <button type="submit">Check Access</button>
+    </form>
+</body>
+</html>
